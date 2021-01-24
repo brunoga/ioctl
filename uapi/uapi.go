@@ -1,8 +1,8 @@
 // +build linux
 
-// Package ioctl implements the Linux userland (UAPI) ioctl interface for
-// generating and parsing ioctl command definitions.
-package ioctl
+// Package uapi implements the Linux userland ioctl interface for generating
+// and parsing ioctl command definitions.
+package uapi
 
 const (
 	iocNrBits   uintptr = 8
