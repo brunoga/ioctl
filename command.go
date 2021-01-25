@@ -17,7 +17,7 @@ type Command interface {
 
 type commandImpl uintptr
 
-func NewReadCommand(fd, typ, nr, size uintptr) Command {
+func NewReadCommand(typ, nr, size uintptr) Command {
 	return commandImpl(uapi.Ior(typ, nr, size))
 }
 
