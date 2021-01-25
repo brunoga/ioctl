@@ -2,6 +2,7 @@ package ioctl
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/brunoga/ioctl/uapi"
 	"golang.org/x/sys/unix"
@@ -24,14 +25,9 @@ type Command interface {
 	// Size of the underlying type of the arg Do() parameter.
 	Size() uintptr
 
-	// Do executes the command on the given fd and passing the given arg to the
-	// underlying ioctl call. The arg parameter is normally written as
-	// uintptr(unsafe.Pointer(&actualType)).
-	//
-	// TODO(bga): Accept an actual normal pointer for arg here and do whatever
-	// magic needed inside the do function so not to require direct use of the
-	// unsafe package by callers.
-	Do(fd, arg uintptr) error
+	// Do executes the command on the given fd passing the given arg to the
+	// underlying ioctl call. The arg parameter must be a pointer type.
+	Do(fd uintptr, arg interface{}) error
 }
 
 type commandImpl uintptr
@@ -73,8 +69,14 @@ func (ci commandImpl) Size() uintptr {
 	return uapi.IocSize(uintptr(ci))
 }
 
-func (ci commandImpl) Do(fd, arg uintptr) error {
-	return ioctl(fd, uintptr(ci), arg)
+func (ci commandImpl) Do(fd uintptr, arg interface{}) error {
+	argVal := reflect.ValueOf(arg)
+
+	if argVal.Kind() != reflect.Ptr {
+		return fmt.Errorf("pointer type is required")
+	}
+
+	return ioctl(fd, uintptr(ci), argVal.Pointer())
 }
 
 func ioctl(fd, req, arg uintptr) (err error) {
