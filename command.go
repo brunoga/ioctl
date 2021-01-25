@@ -12,6 +12,7 @@ type Command interface {
 	Type() uintptr
 	Number() uintptr
 	Size() uintptr
+
 	Do(fd, arg uintptr) error
 }
 
@@ -49,3 +50,4 @@ func ioctl(fd, req, arg uintptr) (err error) {
 
 	return nil
 }
+
