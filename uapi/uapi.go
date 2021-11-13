@@ -1,4 +1,4 @@
-// +build linux
+//go:build linux
 
 // Package uapi implements the Linux userland ioctl interface for generating
 // and parsing ioctl command definitions.

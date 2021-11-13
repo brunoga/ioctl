@@ -9,7 +9,7 @@ import (
 )
 
 // Command is a higher level abstraction of a command definition that is also
-// able to execute them.
+// able to execute it.
 type Command interface {
 	// Direction returns what the kernel does to the arg parameter for Do():
 	// Nothing, read, write or read and write.
