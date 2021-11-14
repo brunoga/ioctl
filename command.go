@@ -13,16 +13,16 @@ import (
 type Command interface {
 	// Direction returns what the kernel does to the arg parameter for Do():
 	// Nothing, read, write or read and write.
-	Direction() uintptr
+	Direction() Direction
 
 	// Type identifies a specific subsystem or driver.
 	Type() uintptr
 
 	// Number identifies the specific command and is unique for a
-	// given Type().
+	// given type.
 	Number() uintptr
 
-	// Size of the underlying type of the arg Do() parameter.
+	// Size of the underlying type of the command arg parameter.
 	Size() uintptr
 
 	// Do executes the command on the given fd passing the given arg to the
@@ -53,8 +53,8 @@ func NewReadWriteCommand(typ, nr, size uintptr) Command {
 	return commandImpl(uapi.Iowr(typ, nr, size))
 }
 
-func (ci commandImpl) Direction() uintptr {
-	return uapi.IocDir(uintptr(ci))
+func (ci commandImpl) Direction() Direction {
+	return Direction(uapi.IocDir(uintptr(ci)))
 }
 
 func (ci commandImpl) Type() uintptr {
